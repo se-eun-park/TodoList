@@ -6,6 +6,11 @@ const toDos = document.querySelector(".toDos");
 const TODOLIST = "toDoList";
 let toDoList = [];
 
+// 중복되는 코드를 함수로 만들어줌.
+function saveToDoList() {
+    localStorage.setItem(TODOLIST, JSON.stringify(toDoList));
+}
+
 function saveToDo(toDo) {
     const toDoObj = {
         text: toDo,
@@ -13,7 +18,8 @@ function saveToDo(toDo) {
     };
 
     toDoList.push(toDoObj);
-    localStorage.setItem(TODOLIST, JSON.stringify(toDoList));
+    saveToDoList();
+    
 }
 
 function delToDo(event){
@@ -23,7 +29,7 @@ function delToDo(event){
 
     // 로컬스토어 데이터도 지워주기
     toDoList = toDoList.filter((toDo) => toDo.id !== Number(li.id)); // id값이 다르면 filter를 통해 제외한다.
-    localStorage.setItem(TODOLIST, JSON.stringify(toDoList)); // 갱신
+    saveToDoList(); // 갱신
   }
 
 // PaintToDo 함수는 input에 입력한 값인 toDo를 인자로 받는다.
