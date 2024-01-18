@@ -16,18 +16,36 @@ function saveToDo(toDo) {
     localStorage.setItem(TODOLIST, JSON.stringify(toDoList));
 }
 
-// 로컬 스토리지에 있는 데이터 불러오기
-function loadToDoList() {
-    const loadedToDoList = localStorage.getItem(TODOLIST);
-    // 값이 있다면 실행
-    if (loadedToDoList !== null) {
-        const parsedToDoList = JSON.parse(loadedToDoList);
-        for (let toDo of parsedToDoList) {
-            const {text} = toDo;
-            paintToDo(text);
-            saveToDo(text);
-        }
-    }
+function delToDo(event){
+    const {target: button} = event;
+    const li = button.parentNode;
+    toDos.removeChild(li);
+
+    // 로컬스토어 데이터도 지워주기
+    toDoList = toDoList.filter((toDo) => toDo.id !== Number(li.id)); // id값이 다르면 filter를 통해 제외한다.
+    localStorage.setItem(TODOLIST, JSON.stringify(toDoList)); // 갱신
+  }
+
+// PaintToDo 함수는 input에 입력한 값인 toDo를 인자로 받는다.
+function paintToDo(toDo) {
+    // 1. li태그, span태그를 만들어서
+    const li = document.createElement("li");
+    const span = document.createElement("span");
+
+    // 삭제 버튼
+    const delButton = document.createElement("button");
+    delButton.innerText = "Del";
+    delButton.addEventListener("click", delToDo);
+
+    // 2. toDo를 span태그에 넣어주고,
+    span.innerHTML = toDo;
+
+    // 3. span을 li에, li를 ul에 넣어준다.
+    li.appendChild(span);
+    li.appendChild(delButton);
+    li.id = toDoList.length + 1;
+
+    toDos.appendChild(li);
 }
 
 // createToDo 함수는 event를 인자로 받는다.
@@ -43,18 +61,18 @@ function createToDo(event) {
     toDoInput.value = "";
 }
 
-// PaintToDo 함수는 input에 입력한 값인 toDo를 인자로 받는다.
-function paintToDo(toDo) {
-    // 1. li태그, span태그를 만들어서
-    const li = document.createElement("li");
-    const span = document.createElement("span");
-
-    // 2. toDo를 span태그에 넣어주고,
-    span.innerHTML = toDo;
-
-    // 3. span을 li에, li를 ul에 넣어준다.
-    li.appendChild(span);
-    toDos.appendChild(li);
+// 로컬 스토리지에 있는 데이터 불러오기
+function loadToDoList() {
+    const loadedToDoList = localStorage.getItem(TODOLIST);
+    // 값이 있다면 실행
+    if (loadedToDoList !== null) {
+        const parsedToDoList = JSON.parse(loadedToDoList);
+        for (let toDo of parsedToDoList) {
+            const {text} = toDo;
+            paintToDo(text);
+            saveToDo(text);
+        }
+    }
 }
 
 
