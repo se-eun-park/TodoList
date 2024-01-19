@@ -8,13 +8,44 @@ const addButton = document.querySelector("#addButton");
 const TODOLIST = "toDoList";
 let toDoList = [];
 
+// 중요도 순으로 정렬하기 위한 매핑 정의
+const importanceMapping = { 
+    "⭐": 1,
+    "⭐⭐": 2,
+    "⭐⭐⭐": 3,
+    "완료✨": 0
+};
+
+// 정렬 함수 추가
+function sortToDoList() {
+    toDoList.sort((a, b) => {
+        const importanceA = importanceMapping[a.importance];
+        const importanceB = importanceMapping[b.importance];
+
+        if (importanceA === importanceB) {
+            return b.id - a.id; // ID에 따라 내림차순 정렬
+        }
+        return importanceB - importanceA; // 중요도에 따라 내림차순 정렬
+    });
+}
+
+// 화면에 toDoList 렌더링
+function renderToDoList() {
+    toDos.innerHTML = ""; // 기존 리스트 초기화
+    toDoList.forEach(toDo => {
+        paintToDo(toDo.text, toDo.importance);
+    });
+}
+
 function addButtonState(){
     addButton.disabled = toDoInput.value === ""; // input이 비어있으면 버튼을 비활성화
 }
 
 // 중복되는 코드를 함수로 만들어줌.
 function saveToDoList() {
+    sortToDoList(); // 저장 전 정렬
     localStorage.setItem(TODOLIST, JSON.stringify(toDoList));
+    renderToDoList(); // 정렬된 리스트를 화면에 표시
 }
 
 function saveToDo(toDo) {
@@ -56,7 +87,7 @@ function paintToDo(toDo, importance) {
     // 3. span을 li에, li를 ul에 넣어준다.
     li.appendChild(span);
     li.appendChild(delButton);
-    li.id = toDoList.length + 1;
+    // li.id = toDoList.length + 1;
 
     toDos.appendChild(li);
 }
@@ -84,6 +115,9 @@ function loadToDoList() {
     // 값이 있다면 실행
     if (loadedToDoList !== null) {
         const parsedToDoList = JSON.parse(loadedToDoList);
+        sortToDoList();
+        renderToDoList();
+
         for (let toDo of parsedToDoList) {
             paintToDo(toDo.text, toDo.importance);
             // saveToDo(toDo.text);
