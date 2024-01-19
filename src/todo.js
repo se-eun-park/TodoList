@@ -2,6 +2,7 @@
 const toDoForm = document.querySelector(".toDoForm");
 const toDoInput = toDoForm.querySelector("input");
 const toDos = document.querySelector(".toDos");
+const importanceSelect = document.querySelector("#importance-select");
 
 const TODOLIST = "toDoList";
 let toDoList = [];
@@ -15,6 +16,7 @@ function saveToDo(toDo) {
     const toDoObj = {
         text: toDo,
         id: toDoList.length + 1,
+        importance: importanceSelect.value, // 중요도 정보 추가
     };
 
     toDoList.push(toDoObj);
@@ -33,7 +35,7 @@ function delToDo(event){
   }
 
 // PaintToDo 함수는 input에 입력한 값인 toDo를 인자로 받는다.
-function paintToDo(toDo) {
+function paintToDo(toDo, importance) {
     // 1. li태그, span태그를 만들어서
     const li = document.createElement("li");
     const span = document.createElement("span");
@@ -44,7 +46,7 @@ function paintToDo(toDo) {
     delButton.addEventListener("click", delToDo);
 
     // 2. toDo를 span태그에 넣어주고,
-    span.innerHTML = toDo;
+    span.innerHTML = `${toDo} (${importance})`;
 
     // 3. span을 li에, li를 ul에 넣어준다.
     li.appendChild(span);
@@ -61,7 +63,9 @@ function createToDo(event) {
 
     // 2. input에 입력된 값을 변수 toDo로 선언해서, paintToDo 함수에 넣어준다.
     const toDo = toDoInput.value;
-    paintToDo(toDo);
+    const importance = importanceSelect.value; // 중요도 가져오기
+
+    paintToDo(toDo, importance);
     saveToDo(toDo);
     // 3. paintToDo 함수가 실행되고 나면 input을 비워준다.
     toDoInput.value = "";
@@ -74,9 +78,9 @@ function loadToDoList() {
     if (loadedToDoList !== null) {
         const parsedToDoList = JSON.parse(loadedToDoList);
         for (let toDo of parsedToDoList) {
-            const {text} = toDo;
-            paintToDo(text);
-            saveToDo(text);
+            paintToDo(toDo.text, toDo.importance);
+            // saveToDo(toDo.text);
+            toDoList.push(toDo);
         }
     }
 }
