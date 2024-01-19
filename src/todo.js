@@ -33,7 +33,7 @@ function sortToDoList() {
 function renderToDoList() {
     toDos.innerHTML = ""; // 기존 리스트 초기화
     toDoList.forEach(toDo => {
-        paintToDo(toDo.text, toDo.importance);
+        paintToDo(toDo.text, toDo.importance, toDo.id);
     });
 }
 
@@ -51,7 +51,7 @@ function saveToDoList() {
 function saveToDo(toDo) {
     const toDoObj = {
         text: toDo,
-        id: toDoList.length + 1,
+        id: Date.now(),
         importance: importanceSelect.value, // 중요도 정보 추가
     };
 
@@ -66,7 +66,7 @@ function delToDo(event){
     toDos.removeChild(li);
 
     // 로컬스토어 데이터도 지워주기
-    toDoList = toDoList.filter((toDo) => toDo.id !== Number(li.id)); // id값이 다르면 filter를 통해 제외한다.
+    toDoList = toDoList.filter((toDo) => toDo.id !== parseInt(li.id)); // id값이 다르면 filter를 통해 제외한다.
     saveToDoList(); // 갱신
   }
 
@@ -87,7 +87,7 @@ function paintToDo(toDo, importance) {
     // 3. span을 li에, li를 ul에 넣어준다.
     li.appendChild(span);
     li.appendChild(delButton);
-    // li.id = toDoList.length + 1;
+    li.id = id;
 
     toDos.appendChild(li);
 }
