@@ -1,11 +1,16 @@
 // 1. DOM을 이용해서 HTML 문서에서 form, input, ul을 가져온다.
 const toDoForm = document.querySelector(".toDoForm");
-const toDoInput = toDoForm.querySelector("input");
+const toDoInput = toDoForm.querySelector("#toDoInput");
 const toDos = document.querySelector(".toDos");
 const importanceSelect = document.querySelector("#importance-select");
+const addButton = document.querySelector("#addButton");
 
 const TODOLIST = "toDoList";
 let toDoList = [];
+
+function addButtonState(){
+    addButton.disabled = toDoInput.value === ""; // input이 비어있으면 버튼을 비활성화
+}
 
 // 중복되는 코드를 함수로 만들어줌.
 function saveToDoList() {
@@ -69,6 +74,8 @@ function createToDo(event) {
     saveToDo(toDo);
     // 3. paintToDo 함수가 실행되고 나면 input을 비워준다.
     toDoInput.value = "";
+    addButtonState();
+    toDoInput.addEventListener('input', addButtonState);
 }
 
 // 로컬 스토리지에 있는 데이터 불러오기
@@ -91,6 +98,9 @@ function init() {
     loadToDoList();
     // 이벤트 리스너는 submit 이벤트가 발생하면 콜백으로 createToDo 함수를 실행한다.
     toDoForm.addEventListener("submit", createToDo);
+
+    addButtonState();
+    toDoInput.addEventListener('input', addButtonState);
 }
 
 init();
