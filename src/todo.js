@@ -49,19 +49,22 @@ function saveToDoList() {
 }
 
 function saveToDo(toDo) {
+    const newId = toDoList.length + 1;
+
     const toDoObj = {
         text: toDo,
-        id: Date.now(),
+        id: newId,
         importance: importanceSelect.value, // 중요도 정보 추가
     };
 
     toDoList.push(toDoObj);
+    paintToDo(toDo, importanceSelect.value, newId);
     saveToDoList();
     
 }
 
 function delToDo(event){
-    const {target: button} = event;
+    const button = event.target;
     const li = button.parentNode;
     toDos.removeChild(li);
 
@@ -71,7 +74,7 @@ function delToDo(event){
   }
 
 // PaintToDo 함수는 input에 입력한 값인 toDo를 인자로 받는다.
-function paintToDo(toDo, importance) {
+function paintToDo(toDo, importance, id) {
     // 1. li태그, span태그를 만들어서
     const li = document.createElement("li");
     const span = document.createElement("span");
@@ -115,6 +118,7 @@ function loadToDoList() {
     // 값이 있다면 실행
     if (loadedToDoList !== null) {
         const parsedToDoList = JSON.parse(loadedToDoList);
+        toDoList = parsedToDoList;
         sortToDoList();
         renderToDoList();
 
@@ -138,4 +142,3 @@ function init() {
 }
 
 init();
-
