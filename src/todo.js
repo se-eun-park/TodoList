@@ -49,6 +49,24 @@ categorySelect.addEventListener("change", () => {
     renderFilteredToDoList(categorySelect.value);
 });
 
+function toggleComplete(id) {
+    toDoList = toDoList.map(toDo => {
+        if (toDo.id === id) {
+            // 완료 상태일 경우, 이전 중요도로 복원
+            if (toDo.importance === "완료✨") {
+                toDo.importance = toDo.previousImportance;
+            } 
+            else {
+                // 완료 상태가 아닐 경우, 이전 중요도를 저장하고 완료로 설정
+                toDo.previousImportance = toDo.importance;
+                toDo.importance = "완료✨";
+            }
+        }
+        return toDo;
+    });
+    saveToDoList();
+}
+
 // 화면에 toDoList 렌더링
 function renderToDoList() {
     toDos.innerHTML = ""; // 기존 리스트 초기화
@@ -70,11 +88,13 @@ function saveToDoList() {
 
 function saveToDo(toDo) {
     const newId = toDoList.length + 1;
+    const importance = importanceSelect.value;
 
     const toDoObj = {
         text: toDo,
         id: newId,
         importance: importanceSelect.value, // 중요도 정보 추가
+        previousImportance: importance !== "완료✨" ? importance : "완료✨" // 중요도가 '완료'가 아닐 경우에만 설정
     };
 
     toDoList.push(toDoObj);
@@ -113,6 +133,7 @@ function paintToDo(toDo, importance, id) {
     // 3. span을 li에, li를 ul에 넣어준다.
     li.appendChild(span);
     li.appendChild(delButton);
+    li.addEventListener("click", () => toggleComplete(id));
     li.id = id;
 
     toDos.appendChild(li);
