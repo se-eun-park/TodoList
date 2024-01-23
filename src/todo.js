@@ -50,7 +50,7 @@ categorySelect.addEventListener("change", () => {
 });
 
 function toggleComplete(id) {
-    toDoList = toDoList.map(toDo => {
+    toDoList.map(toDo => {
         if (toDo.id === id) {
             // 완료 상태일 경우, 이전 중요도로 복원
             if (toDo.importance === "완료✨") {
@@ -62,7 +62,6 @@ function toggleComplete(id) {
                 toDo.importance = "완료✨";
             }
         }
-        return toDo;
     });
     saveToDoList();
 }
@@ -163,17 +162,17 @@ function createToDo(event) {
 function loadToDoList() {
     const loadedToDoList = localStorage.getItem(TODOLIST);
     // 값이 있다면 실행
-    if (loadedToDoList !== null) {
+    if (loadedToDoList) {
         const parsedToDoList = JSON.parse(loadedToDoList);
-        toDoList = parsedToDoList;
+        toDoList = [...parsedToDoList];
         sortToDoList();
         renderToDoList();
 
-        for (let toDo of parsedToDoList) {
-            paintToDo(toDo.text, toDo.importance);
-            // saveToDo(toDo.text);
-            toDoList.push(toDo);
-        }
+        // for (let toDo of toDoList) {
+        //     paintToDo(toDo.text, toDo.importance);
+        //     // saveToDo(toDo.text);
+        //     // toDoList.push(toDo);
+        // }
     }
 }
 
