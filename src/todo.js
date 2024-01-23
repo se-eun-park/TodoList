@@ -3,6 +3,7 @@ const toDoForm = document.querySelector(".toDoForm");
 const toDoInput = toDoForm.querySelector("#toDoInput");
 const toDos = document.querySelector(".toDos");
 const importanceSelect = document.querySelector("#importance-select");
+const categorySelect = document.querySelector("#category-select");
 const addButton = document.querySelector("#addButton");
 
 const TODOLIST = "toDoList";
@@ -28,6 +29,25 @@ function sortToDoList() {
         return importanceB - importanceA; // 중요도에 따라 내림차순 정렬
     });
 }
+
+function filterToDoList(category) {
+    if (category === "전체") {
+        return toDoList;
+    }
+    return toDoList.filter(toDo => toDo.importance === category);
+}
+
+function renderFilteredToDoList(category) {
+    const filteredList = filterToDoList(category);
+    toDos.innerHTML = ""; // 리스트 초기화
+    filteredList.forEach(toDo => {
+        paintToDo(toDo.text, toDo.importance, toDo.id);
+    });
+}
+
+categorySelect.addEventListener("change", () => {
+    renderFilteredToDoList(categorySelect.value);
+});
 
 // 화면에 toDoList 렌더링
 function renderToDoList() {
@@ -71,6 +91,9 @@ function delToDo(event){
     // 로컬스토어 데이터도 지워주기
     toDoList = toDoList.filter((toDo) => toDo.id !== parseInt(li.id)); // id값이 다르면 filter를 통해 제외한다.
     saveToDoList(); // 갱신
+
+    // 현재 선택된 카테고리에 맞게 목록 다시 렌더링
+    renderFilteredToDoList(categorySelect.value);
   }
 
 // PaintToDo 함수는 input에 입력한 값인 toDo를 인자로 받는다.
@@ -110,6 +133,9 @@ function createToDo(event) {
     toDoInput.value = "";
     addButtonState();
     toDoInput.addEventListener('input', addButtonState);
+
+    // 현재 선택된 카테고리에 맞게 목록 다시 렌더링
+    renderFilteredToDoList(categorySelect.value);
 }
 
 // 로컬 스토리지에 있는 데이터 불러오기
